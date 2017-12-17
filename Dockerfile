@@ -1,7 +1,8 @@
 FROM qnib/alplain-golang:1.9.2
 
 ARG MINIO_REL=RELEASE.2017-10-27T18-59-02Z
-ENV GOPATH=/usr/local
+ENV GOPATH=/usr/local \
+    MINIO_DATA=/export/
 VOLUME /export/
 
 RUN set -x \
