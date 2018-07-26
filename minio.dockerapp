@@ -13,28 +13,31 @@ targets:
 version: '3.6'
 services:
   server:
-    image: qnib/plain-minio:${minio.server.img-tag}
+    image: ${registry}/qnib/plain-minio:${minio.server.img-tag}
     hostname: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
     ports:
       - ${minio.server.port}:9000
     deploy:
       replicas: ${minio.server.replicas}
+      placement:
+        preferences:
+          - spread: node.labels.hostname
     volumes:
       - type: bind
         source: ${minio.server.data}
         target: /data/
     # {{if .minio.server.access}}
     environment:
-     - SWARM_TASK_SLOT={{.Task.Slot}}
      - MINIO_ACCESS_KEY=${minio.server.access}
      - MINIO_SECRET_KEY=${minio.server.secret}
      - MINIO_TASK_COUNT=${minio.server.replicas}
     # {{end}}
 ---
+registry: docker.io
 minio:
   server:
-    replicas: 4
-    img-tag: 2018-07-23T18-34-49Z.4
+    replicas: 1
+    img-tag: 2018-07-23T18-34-49Z.5
     port: 9000
     data: /var/lib/minio
     access: ACCESSKEY
