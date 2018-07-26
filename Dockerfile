@@ -15,8 +15,7 @@ RUN git checkout tags/RELEASE.${MINIO_REL}
 RUN go build
 
 FROM qnib/alplain-init
-ENV MINIO_DATA=/export/
-VOLUME /export/
+ENV MINIO_DATA=/data/
 COPY --from=build /usr/local/src/github.com/minio/minio/minio /usr/local/bin/
 COPY opt/qnib/minio/bin/start.sh /opt/qnib/minio/bin/
 CMD ["/opt/qnib/minio/bin/start.sh"]

@@ -19,10 +19,10 @@ services:
     volumes:
       - type: bind
         source: ${minio.server.data}
-        target: /exports/
+        target: /data/
 ---
 minio:
   server:
-    img-tag: 2018-07-23T18-34-49Z
+    img-tag: 2018-07-23T18-34-49Z.2
     port: 9000
     data: /var/lib/minio
