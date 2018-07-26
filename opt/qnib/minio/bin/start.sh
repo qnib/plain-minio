@@ -6,7 +6,8 @@ elif [[ ${MINIO_TASK_COUNT:-1} > 1 ]];then
     mkdir -p /opt/healthcheck/
     MINIO_OPTS="$(go-fisherman --mintasks ${MINIO_TASK_COUNT} --template 'http://{{.IP}}/data/' server)"
 else
-    MINIO_OPTS="${MINIO_DATA}"
+    mkdir -p "${MINIO_DATA}/t${SWARM_TASK_SLOT}"
+    MINIO_OPTS="${MINIO_DATA}/t${SWARM_TASK_SLOT}"
 fi
 
 echo ">> minio server ${MINIO_OPTS}"

@@ -21,10 +21,11 @@ services:
       replicas: ${minio.server.replicas}
     volumes:
       - type: bind
-        source: "${minio.server.data}/t{{.Task.Slot}}"
+        source: ${minio.server.data}
         target: /data/
     # {{if .minio.server.access}}
     environment:
+     - SWARM_TASK_SLOT={{.Task.Slot}}
      - MINIO_ACCESS_KEY=${minio.server.access}
      - MINIO_SECRET_KEY=${minio.server.secret}
      - MINIO_TASK_COUNT=${minio.server.replicas}
@@ -33,7 +34,7 @@ services:
 minio:
   server:
     replicas: 4
-    img-tag: 2018-07-23T18-34-49Z.3
+    img-tag: 2018-07-23T18-34-49Z.4
     port: 9000
     data: /var/lib/minio
     access: ACCESSKEY
