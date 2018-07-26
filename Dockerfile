@@ -1,18 +1,22 @@
-FROM qnib/alplain-golang:1.9.2
+ARG DOCKER_REGISTRY=docker.io
+ARG FROM_IMG_REPO=qnib
+ARG FROM_IMG_NAME="alplain-golang"
+ARG FROM_IMG_TAG="1.10.3"
+ARG FROM_IMG_HASH=""
+FROM ${DOCKER_REGISTRY}/${FROM_IMG_REPO}/${FROM_IMG_NAME}:${FROM_IMG_TAG}${DOCKER_IMG_HASH} AS build
 
-ARG MINIO_REL=RELEASE.2017-10-27T18-59-02Z
-ENV GOPATH=/usr/local \
-    MINIO_DATA=/export/
+ARG MINIO_REL=2018-07-23T18-34-49Z
+
+RUN apk add --update git musl-dev
+WORKDIR /usr/local/src/github.com/minio/
+RUN git clone https://github.com/minio/minio.git ./minio
+WORKDIR /usr/local/src/github.com/minio/minio
+RUN git checkout tags/RELEASE.${MINIO_REL}
+RUN go build
+
+FROM qnib/alplain-init
+ENV MINIO_DATA=/export/
 VOLUME /export/
-
-RUN set -x \
- && apk add --update git musl-dev \
- && mkdir -p  ${GOPATH}/src/github.com/minio/ \
- && git clone https://github.com/minio/minio.git ${GOPATH}/src/github.com/minio/minio \
- && cd ${GOPATH}/src/github.com/minio/minio/ \
- && git checkout tags/${MINIO_REL} \
- && go install \
- && apk del git \
- && rm -rf /var/cache/apk/* /usr/local/src/github.com /usr/local/bin/go-wrapper
+COPY --from=build /usr/local/src/github.com/minio/minio/minio /usr/local/bin/
 COPY opt/qnib/minio/bin/start.sh /opt/qnib/minio/bin/
 CMD ["/opt/qnib/minio/bin/start.sh"]

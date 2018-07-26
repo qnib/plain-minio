@@ -1,0 +1,28 @@
+---
+version: 0.1.0
+name: minio
+description: "S3 compatible object store"
+maintainers:
+- name: Christian Kniep
+  email: christian@qnib.org
+targets:
+  swarm: true
+  kubernetes: false
+
+---
+version: '3.6'
+services:
+  server:
+    image: qnib/plain-minio:${minio.server.img-tag}
+    ports:
+      - ${minio.server.port}:9000
+    volumes:
+      - type: bind
+        source: ${minio.server.data}
+        target: /exports/
+---
+minio:
+  server:
+    img-tag: 2018-07-23T18-34-49Z
+    port: 9000
+    data: /var/lib/minio
