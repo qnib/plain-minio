@@ -20,9 +20,16 @@ services:
       - type: bind
         source: ${minio.server.data}
         target: /data/
+    {{if .minio.server.access}}
+    environment:
+     - MINIO_ACCESS_KEY=${minio.server.access}
+     - MINIO_SECRET_KEY=${minio.server.secret}
+    {{end}}
 ---
 minio:
   server:
     img-tag: 2018-07-23T18-34-49Z.2
     port: 9000
     data: /var/lib/minio
+    access:
+    secret:
