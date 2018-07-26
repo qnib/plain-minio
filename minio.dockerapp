@@ -1,5 +1,5 @@
 ---
-version: 0.1.0
+version: 0.1.1
 name: minio
 description: "S3 compatible object store"
 maintainers:
@@ -28,6 +28,7 @@ services:
         target: /data/
     # {{if .minio.server.access}}
     environment:
+     - SWARM_TASK_SLOT={{.Task.Slot}}
      - MINIO_ACCESS_KEY=${minio.server.access}
      - MINIO_SECRET_KEY=${minio.server.secret}
      - MINIO_TASK_COUNT=${minio.server.replicas}
